@@ -43,7 +43,7 @@ char* parellel_game_of_life (char* outboard,
     for(i = 0; i < 4; i++) {
       pthread_join(thrd[i], NULL);
     }
-
+    SWAP_BOARDS( outboard, inboard );
     // /* HINT: in the parallel decomposition, LDA may not be equal to
     //    nrows! */
     // const int LDA = nrows;
@@ -100,14 +100,14 @@ void *thread (void ** args) {
   const int gens_max = *((int *)args[5]);
   const int LDA = nrows/4;
   int curgen, i, j;
-  int from = (slice*nrows)/4;
-  int to = ((slice+1)*nrows)/4;
+  int from = (slice*gens_max)/4;
+  int to = ((slice+1)*gens_max)/4;
 
-  for (curgen = 0; curgen < gens_max; curgen++)
+  for (curgen = from; curgen < to; curgen++)
     {
         /* HINT: you'll be parallelizing these loop(s) by doing a
            geometric decomposition of the output */
-        for (i = from; i < to; i++)
+        for (i = 0; i < nrows; i++)
         {
             for (j = 0; j < ncols; j++)
             {
