@@ -1,4 +1,4 @@
-#ifndef _life_h
+// #ifndef _life_h
 #define _life_h
 
 /**
@@ -34,4 +34,4 @@ parellel_game_of_life (char* outboard,
 			 const int gens_max);
 
 
-#endif /* _life_h */
+// #endif /* _life_h */
