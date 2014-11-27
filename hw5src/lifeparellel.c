@@ -32,13 +32,13 @@ char* parellel_game_of_life (char* outboard,
     int index[4];
 
     void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
-    for (int i = 0; i < num_threads; i++) {
+    for (int i = 0; i < 4; i++) {
       // index[i] = i;
       args[0] = (void*) i;
       pthread_create(&thrd[i], NULL, &thread, args);
     }
 
-    for(int i = 0; i < num_threads; i++) {
+    for(int i = 0; i < 4; i++) {
       pthread_join(thrd[i], NULL);
     }
 
@@ -96,8 +96,8 @@ void *thread (void ** args) {
   const int gens_max = *((int *)args[5]);
   const int LDA = nrows/4;
   int curgen, i, j;
-  int from = (slice*nrows)/num_threads;
-  int to = ((slice+1)*nrows)/num_threads;
+  int from = (slice*nrows)/4;
+  int to = ((slice+1)*nrows)/4;
 
   for (curgen = 0; curgen < gens_max; curgen++)
     {
