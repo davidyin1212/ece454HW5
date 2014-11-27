@@ -32,7 +32,7 @@ char* parellel_game_of_life (char* outboard,
     int index[4];
     int i;
 
-    void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
+    void *args [6] = {0, outboard, inboard, &nrows, &ncols, &gens_max};
 
     for (i = 0; i < 4; i++) {
       index[i] = i;
