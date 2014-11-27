@@ -20,6 +20,7 @@
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
 void *thread(void **args);
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
 char* parellel_game_of_life (char* outboard, 
         char* inboard,
@@ -107,14 +108,15 @@ void *thread (void ** args) {
   {
       /* HINT: you'll be parallelizing these loop(s) by doing a
          geometric decomposition of the output */
+    pthread_mutex_lock(&mutex1);
       for (i = 0; i < nrows; i++)
       {
           for (j = from; j < to; j++)
           {
               const int inorth = mod (i-1, nrows);
               const int isouth = mod (i+1, nrows);
-              const int jwest = mod (j-1, to);
-              const int jeast = mod (j+1, to);
+              const int jwest = mod (j-1, ncols);
+              const int jeast = mod (j+1, ncols);
 
               const char neighbor_count = 
                   BOARD (inboard, inorth, jwest) + 
@@ -131,6 +133,7 @@ void *thread (void ** args) {
           }
       }
       SWAP_BOARDS( outboard, inboard );
+      pthread_mutex_unlock(&mutex1);
   }  
 }
 
