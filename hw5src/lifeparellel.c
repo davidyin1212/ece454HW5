@@ -98,41 +98,40 @@ void *thread (void ** args) {
   const int nrows = *((int *)args[3]); 
   const int ncols = *((int *)args[4]);
   const int gens_max = *((int *)args[5]);
-  const int LDA = nrows/4;
+  const int LDA = nrows;
   int curgen, i, j;
   int from = (slice*gens_max)/4;
   int to = ((slice+1)*gens_max)/4;
 
   for (curgen = from; curgen < to; curgen++)
-    {
-        /* HINT: you'll be parallelizing these loop(s) by doing a
-           geometric decomposition of the output */
-        for (i = 0; i < nrows; i++)
-        {
-            for (j = 0; j < ncols; j++)
-            {
-                const int inorth = mod (i-1, nrows);
-                const int isouth = mod (i+1, nrows);
-                const int jwest = mod (j-1, ncols);
-                const int jeast = mod (j+1, ncols);
+  {
+      /* HINT: you'll be parallelizing these loop(s) by doing a
+         geometric decomposition of the output */
+      for (i = 0; i < nrows; i++)
+      {
+          for (j = 0; j < ncols; j++)
+          {
+              const int inorth = mod (i-1, nrows);
+              const int isouth = mod (i+1, nrows);
+              const int jwest = mod (j-1, ncols);
+              const int jeast = mod (j+1, ncols);
 
-                const char neighbor_count = 
-                    BOARD (inboard, inorth, jwest) + 
-                    BOARD (inboard, inorth, j) + 
-                    BOARD (inboard, inorth, jeast) + 
-                    BOARD (inboard, i, jwest) +
-                    BOARD (inboard, i, jeast) + 
-                    BOARD (inboard, isouth, jwest) +
-                    BOARD (inboard, isouth, j) + 
-                    BOARD (inboard, isouth, jeast);
+              const char neighbor_count = 
+                  BOARD (inboard, inorth, jwest) + 
+                  BOARD (inboard, inorth, j) + 
+                  BOARD (inboard, inorth, jeast) + 
+                  BOARD (inboard, i, jwest) +
+                  BOARD (inboard, i, jeast) + 
+                  BOARD (inboard, isouth, jwest) +
+                  BOARD (inboard, isouth, j) + 
+                  BOARD (inboard, isouth, jeast);
 
-                BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+              BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
 
-            }
-        }
-        SWAP_BOARDS( outboard, inboard );
-
-    }  
+          }
+      }
+      SWAP_BOARDS( outboard, inboard );
+  }  
 }
 
 
