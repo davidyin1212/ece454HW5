@@ -30,15 +30,16 @@ char* parellel_game_of_life (char* outboard,
 
     pthread_t thrd[4];
     int index[4];
+    int i;
 
     void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
-    for (int i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) {
       // index[i] = i;
       args[0] = (void*) i;
       pthread_create(&thrd[i], NULL, &thread, args);
     }
 
-    for(int i = 0; i < 4; i++) {
+    for(i = 0; i < 4; i++) {
       pthread_join(thrd[i], NULL);
     }
 
