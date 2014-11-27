@@ -33,11 +33,11 @@ char* parellel_game_of_life (char* outboard,
     int i;
 
     void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
-    printf("testing\n");
-    
+
     for (i = 0; i < 4; i++) {
       // index[i] = i;
       args[0] = (void*) i;
+      printf("testing\n");
       pthread_create(&thrd[i], NULL, &thread, args);
     }
 
