@@ -21,8 +21,7 @@
 
 void *thread(void **args);
 
-    char*
-parellel_game_of_life (char* outboard, 
+char* parellel_game_of_life (char* outboard, 
         char* inboard,
         const int nrows,
         const int ncols,
