@@ -28,8 +28,8 @@ char* parellel_game_of_life (char* outboard,
         const int gens_max)
 {
 
-    pthread_t thrd[num_threads];
-    int index[num_threads];
+    pthread_t thrd[4];
+    int index[4];
 
     void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
     for (int i = 0; i < num_threads; i++) {
