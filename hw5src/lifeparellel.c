@@ -33,6 +33,8 @@ char* parellel_game_of_life (char* outboard,
     int i;
 
     void *args [6] = {0, outboard, inboard, nrows, ncols, gens_max};
+    printf("testing\n");
+    
     for (i = 0; i < 4; i++) {
       // index[i] = i;
       args[0] = (void*) i;
@@ -42,7 +44,6 @@ char* parellel_game_of_life (char* outboard,
     for(i = 0; i < 4; i++) {
       pthread_join(thrd[i], NULL);
     }
-    printf("testing\n");
 
     // /* HINT: in the parallel decomposition, LDA may not be equal to
     //    nrows! */
