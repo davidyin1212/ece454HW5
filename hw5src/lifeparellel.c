@@ -113,8 +113,8 @@ void *thread (void ** args) {
           {
               const int inorth = mod (i-1, nrows);
               const int isouth = mod (i+1, nrows);
-              const int jwest = mod (j-1, ncols/4);
-              const int jeast = mod (j+1, ncols/4);
+              const int jwest = mod (j-1, to);
+              const int jeast = mod (j+1, to);
 
               const char neighbor_count = 
                   BOARD (inboard, inorth, jwest) + 
