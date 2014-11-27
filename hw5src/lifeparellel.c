@@ -3,7 +3,7 @@
  * The original sequential implementation resides here.
  * Do not modify this file, but you are encouraged to borrow from it
  ****************************************************************************/
-#include "lifeparellel.h"
+#include "life.h"
 #include "util.h"
 #include "pthread.h"
 
