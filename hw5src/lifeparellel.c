@@ -100,16 +100,16 @@ void *thread (void ** args) {
   const int gens_max = *((int *)args[5]);
   const int LDA = nrows;
   int curgen, i, j;
-  int from = (slice*gens_max)/4;
-  int to = ((slice+1)*gens_max)/4;
+  int from = (slice*ncols)/4;
+  int to = ((slice+1)*ncols)/4;
 
-  for (curgen = from; curgen < to; curgen++)
+  for (curgen = 0; curgen < gens_max; curgen++)
   {
       /* HINT: you'll be parallelizing these loop(s) by doing a
          geometric decomposition of the output */
       for (i = 0; i < nrows; i++)
       {
-          for (j = 0; j < ncols; j++)
+          for (j = from; j < to; j++)
           {
               const int inorth = mod (i-1, nrows);
               const int isouth = mod (i+1, nrows);
