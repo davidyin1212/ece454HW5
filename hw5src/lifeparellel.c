@@ -90,8 +90,8 @@ char* parellel_game_of_life (char* outboard,
 }
 
 void *thread (void ** args) {
-  printf("slice: %d\n", args[0]);
   int slice = *((int *)args[0]);
+  printf("slice: %d\n", slice);
   char *outboard = (char *) args[1];
   char *inboard = (char *) args[2];
   const int nrows = *((int *)args[3]); 
