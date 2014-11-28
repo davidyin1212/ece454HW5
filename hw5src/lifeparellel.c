@@ -121,10 +121,10 @@ void *thread (void * args) {
   // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
   int i, j;
-  int from = (slice*ncols)/4;
-  int to = ((slice+1)*ncols)/4;
+  int from = (slice*nrows)/4;
+  int to = ((slice+1)*nrows)/4;
   char block[8];
-  for (i = 0; i < nrows; i++)
+  for (i = from; i < to; i++)
   {
     const int inorth = (i == 0) ? (nrows-1) : (i-1);
     const int isouth = (i == nrows-1) ? (0) : (i+1);
@@ -136,7 +136,7 @@ void *thread (void * args) {
     int prevnode = inboard[start_of_i + (ncols-1)] - '0';
     int curpair = inboard[start_of_inorth] + inboard[start_of_isouth] - '0';
 
-    for (j = from; j < to; j++)
+    for (j = 0; j < ncols; j++)
     {
       const int jwest = (j == 0) ? (ncols-1) : (j-1);
       const int jeast = (j == ncols-1) ? (0) : (j+1);
