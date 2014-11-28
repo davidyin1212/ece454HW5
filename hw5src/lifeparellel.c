@@ -19,6 +19,16 @@
 
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
+typedef struct args
+{
+  int slice;
+  char* outboard;
+  char* inboard;
+  int nrows;
+  int ncols;
+  int gens_max;
+} Args;
+
 void *thread(void **args);
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
@@ -33,7 +43,7 @@ char* parellel_game_of_life (char* outboard,
     int index[4];
     // int i;
 
-    void *args [6] = {0, outboard, inboard, &nrows, &ncols, &gens_max};
+    Args *args [4];
 
     /* HINT: in the parallel decomposition, LDA may not be equal to
        nrows! */
@@ -45,38 +55,42 @@ char* parellel_game_of_life (char* outboard,
         /* HINT: you'll be parallelizing these loop(s) by doing a
            geometric decomposition of the output */
       for (i = 0; i < 4; i++) {
-        index[i] = i;
-        args[0] = (void*) &index[i];
-        pthread_create(&thrd[i], NULL, &thread, args);
+        args[i]->slice = i;
+        args[i]->outboard = outboard;
+        args[i]->inboard = inboard;
+        args[i]->nrows = nrows;
+        args[i]->ncols = ncols;
+        args[i]->gens_max = gens_max;
+        pthread_create(&thrd[i], NULL, &thread, args[i]);
       }
 
       for(i = 0; i < 4; i++) {
         pthread_join(thrd[i], NULL);
       }
-        // for (i = 0; i < nrows; i++)
-        // {
-        //     for (j = 0; j < ncols; j++)
-        //     {
-        //         const int inorth = mod (i-1, nrows);
-        //         const int isouth = mod (i+1, nrows);
-        //         const int jwest = mod (j-1, ncols);
-        //         const int jeast = mod (j+1, ncols);
+      // for (i = 0; i < nrows; i++)
+      // {
+      //     for (j = 0; j < ncols; j++)
+      //     {
+      //         const int inorth = mod (i-1, nrows);
+      //         const int isouth = mod (i+1, nrows);
+      //         const int jwest = mod (j-1, ncols);
+      //         const int jeast = mod (j+1, ncols);
 
-        //         const char neighbor_count = 
-        //             BOARD (inboard, inorth, jwest) + 
-        //             BOARD (inboard, inorth, j) + 
-        //             BOARD (inboard, inorth, jeast) + 
-        //             BOARD (inboard, i, jwest) +
-        //             BOARD (inboard, i, jeast) + 
-        //             BOARD (inboard, isouth, jwest) +
-        //             BOARD (inboard, isouth, j) + 
-        //             BOARD (inboard, isouth, jeast);
+      //         const char neighbor_count = 
+      //             BOARD (inboard, inorth, jwest) + 
+      //             BOARD (inboard, inorth, j) + 
+      //             BOARD (inboard, inorth, jeast) + 
+      //             BOARD (inboard, i, jwest) +
+      //             BOARD (inboard, i, jeast) + 
+      //             BOARD (inboard, isouth, jwest) +
+      //             BOARD (inboard, isouth, j) + 
+      //             BOARD (inboard, isouth, jeast);
 
-        //         BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+      //         BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
 
-        //     }
-        // }
-        SWAP_BOARDS( outboard, inboard );
+      //     }
+      // }
+      SWAP_BOARDS( outboard, inboard );
 
     }
 
@@ -89,20 +103,19 @@ char* parellel_game_of_life (char* outboard,
     return inboard;
 }
 
-void *thread (void ** args) {
-  int slice = *((int *)args[0]);
-  // printf("slice: %d\n", slice);
-  // printf("arg 1: %p\n", (char *) args[1]);
-  char *outboard = (char *) args[1];
-  char *inboard = (char *) args[2];
-  const int nrows = *((int *)args[3]); 
-  const int ncols = *((int *)args[4]);
-  const int gens_max = *((int *)args[5]);
-  // printf("nrows: %d\n", nrows);
-  // printf("ncols: %d\n", ncols);
+void *thread (void * args) {
+  int slice = args->slice;
+  printf("slice: %d\n", slice);
+  printf("arg 1: %p\n", (char *) args[1]);
+  char *outboard = args->outboard;
+  char *inboard = args->inboard;
+  const int nrows = args->nrows; 
+  const int ncols = args->ncols;
+  printf("nrows: %d\n", nrows);
+  printf("ncols: %d\n", ncols);
   // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
-  int curgen, i, j;
+  int i, j;
   int from = (slice*ncols)/4;
   int to = ((slice+1)*ncols)/4;
 
