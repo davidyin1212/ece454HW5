@@ -20,8 +20,8 @@
 
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
-int L = 128;
-int W = 8;
+int L1 = 128;
+int W1 = 8;
     char*
 sequential_game_of_life (char* outboard, 
         char* inboard,
@@ -42,8 +42,8 @@ sequential_game_of_life (char* outboard,
         {
             for (j = 0; j < ncols; j++)
             {
-              for (i1 = i; i < MIN(nrows, i + L); i++) {
-                for (j1 = j; j < MIN(ncols, j + W); j++) {
+              for (i1 = i; i < MIN(nrows, i + L1); i++) {
+                for (j1 = j; j < MIN(ncols, j + W1); j++) {
                 const int inorth = mod (i1-1, nrows);
                 const int isouth = mod (i1+1, nrows);
                 const int jwest = mod (j1-1, ncols);
