@@ -106,14 +106,14 @@ char* parellel_game_of_life (char* outboard,
 
 void *thread (void * args) {
   int slice = ((Args *)args)->slice;
-  printf("slice: %d\n", slice);
+  // printf("slice: %d\n", slice);
   // printf("arg 1: %p\n", (char *) args[1]);
   char *outboard = ((Args *)args)->outboard;
   char *inboard = ((Args *)args)->inboard;
   const int nrows = ((Args *)args)->nrows; 
   const int ncols = ((Args *)args)->ncols;
-  printf("nrows: %d\n", nrows);
-  printf("ncols: %d\n", ncols);
+  // printf("nrows: %d\n", nrows);
+  // printf("ncols: %d\n", ncols);
   // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
   int i, j;
