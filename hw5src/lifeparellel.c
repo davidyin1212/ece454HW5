@@ -19,6 +19,8 @@
 
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
+#define MIN(X,Y)  ((X) < (Y) ? (X) : (Y))
+
 typedef struct args
 {
   int slice;
@@ -31,6 +33,8 @@ typedef struct args
 
 void *thread(void *args);
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
+int L = 128;
+int W = 8;
 
 char* parellel_game_of_life (char* outboard, 
         char* inboard,
@@ -116,30 +120,34 @@ void *thread (void * args) {
   // printf("ncols: %d\n", ncols);
   // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
-  int i, j;
+  int i, j, i1, j1;
   int from = (slice*ncols)/4;
   int to = ((slice+1)*ncols)/4;
 
-  for (i = 0; i < nrows; i++)
+  for (i = 0; i < nrows; i+=L)
   {
-    for (j = from; j < to; j++)
+    for (j = from; j < to; j+=W)
     {
-      const int inorth = mod (i-1, nrows);
-      const int isouth = mod (i+1, nrows);
-      const int jwest = mod (j-1, ncols);
-      const int jeast = mod (j+1, ncols);
+      for (i1 = i; i < MIN(nrows, i + L); i++) {
+        for (j1 = j; j < MIN(to, j + W); j++) {
+          const int inorth = mod (i1-1, nrows);
+          const int isouth = mod (i1+1, nrows);
+          const int jwest = mod (j1-1, ncols);
+          const int jeast = mod (j1+1, ncols);
 
-      const char neighbor_count = 
-          BOARD (inboard, inorth, jwest) + 
-          BOARD (inboard, inorth, j) + 
-          BOARD (inboard, inorth, jeast) + 
-          BOARD (inboard, i, jwest) +
-          BOARD (inboard, i, jeast) + 
-          BOARD (inboard, isouth, jwest) +
-          BOARD (inboard, isouth, j) + 
-          BOARD (inboard, isouth, jeast);
+          const char neighbor_count = 
+              BOARD (inboard, inorth, jwest) + 
+              BOARD (inboard, inorth, j1) + 
+              BOARD (inboard, inorth, jeast) + 
+              BOARD (inboard, i1, jwest) +
+              BOARD (inboard, i1, jeast) + 
+              BOARD (inboard, isouth, jwest) +
+              BOARD (inboard, isouth, j1) + 
+              BOARD (inboard, isouth, jeast);
 
-      BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+          BOARD(outboard, i1, j1) = alivep (neighbor_count, BOARD (inboard, i1, j1));
+        }
+      }
     }
   }
 }
