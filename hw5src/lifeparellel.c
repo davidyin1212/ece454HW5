@@ -33,8 +33,8 @@ typedef struct args
 
 void *thread(void *args);
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-int L = 1;
-int W = 1;
+int L = 4;
+int W = 4;
 
 char* parellel_game_of_life (char* outboard, 
         char* inboard,
