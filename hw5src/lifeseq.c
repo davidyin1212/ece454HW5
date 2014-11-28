@@ -16,6 +16,8 @@
   b2 = temp; \
 } while(0)
 
+#define MIN(X,Y)  ((X) < (Y) ? (X) : (Y))
+
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
 
@@ -29,7 +31,7 @@ sequential_game_of_life (char* outboard,
     /* HINT: in the parallel decomposition, LDA may not be equal to
        nrows! */
     const int LDA = nrows;
-    int curgen, i, j;
+    int curgen, i, j, i1, j1;
 
     for (curgen = 0; curgen < gens_max; curgen++)
     {
@@ -39,23 +41,26 @@ sequential_game_of_life (char* outboard,
         {
             for (j = 0; j < ncols; j++)
             {
-                const int inorth = mod (i-1, nrows);
-                const int isouth = mod (i+1, nrows);
-                const int jwest = mod (j-1, ncols);
-                const int jeast = mod (j+1, ncols);
+              for (i1 = i; i < MIN(nrows, i + L); i++) {
+                for (j1 = j; j < MIN(ncols, j + W); j++) {
+                const int inorth = mod (i1-1, nrows);
+                const int isouth = mod (i1+1, nrows);
+                const int jwest = mod (j1-1, ncols);
+                const int jeast = mod (j1+1, ncols);
 
                 const char neighbor_count = 
                     BOARD (inboard, inorth, jwest) + 
-                    BOARD (inboard, inorth, j) + 
+                    BOARD (inboard, inorth, j1) + 
                     BOARD (inboard, inorth, jeast) + 
-                    BOARD (inboard, i, jwest) +
-                    BOARD (inboard, i, jeast) + 
+                    BOARD (inboard, i1, jwest) +
+                    BOARD (inboard, i1, jeast) + 
                     BOARD (inboard, isouth, jwest) +
-                    BOARD (inboard, isouth, j) + 
+                    BOARD (inboard, isouth, j1) + 
                     BOARD (inboard, isouth, jeast);
 
-                BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
-
+                BOARD(outboard, i1, j1) = alivep (neighbor_count, BOARD (inboard, i1, j1));
+            }
+            }
             }
         }
         SWAP_BOARDS( outboard, inboard );
