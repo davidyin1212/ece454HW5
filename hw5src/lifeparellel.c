@@ -133,26 +133,27 @@ void *thread (void * args) {
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
       for (i1 = i; i1 < MIN(nrows, i + L); i1++) {
-          block[0] = BOARD(inboard, MOD (i1-1, nrows), MOD (j-1, ncols));
-          block[1] = BOARD(inboard, i1, MOD (j-1, ncols));
-          block[2] = BOARD(inboard, MOD (i1+1, nrows), MOD (j-1, ncols));
-          block[3] = BOARD(inboard, MOD (i1-1, nrows), j);
-          block[4] = BOARD(inboard, MOD (i1+1, nrows), j);
+          // block[0] = BOARD(inboard, MOD (i1-1, nrows), MOD (j-1, ncols));
+          // block[1] = BOARD(inboard, i1, MOD (j-1, ncols));
+          // block[2] = BOARD(inboard, MOD (i1+1, nrows), MOD (j-1, ncols));
+          // block[3] = BOARD(inboard, MOD (i1-1, nrows), j);
+          // block[4] = BOARD(inboard, MOD (i1+1, nrows), j);
         for (j1 = j; j1 < MIN(to, j + W); j1++) {
           const int inorth = MOD (i1-1, nrows);
           const int isouth = MOD (i1+1, nrows);
           const int jwest = MOD (j1-1, ncols);
           const int jeast = MOD (j1+1, ncols);
-
-          block[5] = BOARD (inboard, inorth, jeast);
-          block[6] = BOARD (inboard, i1, jeast);
-          block[7] = BOARD (inboard, isouth, jeast);
-          const char neighbor_count = block[0] + block[1] + block[2] + block[3] + block[4] + block[5] + block[6] + block[7];
           block[0] = block[3];
           block[1] = BOARD(inboard, i1, j1);
           block[2] = block[4];
           block[3] = block[5];
           block[4] = block[7];
+
+          block[5] = BOARD (inboard, inorth, jeast);
+          block[6] = BOARD (inboard, i1, jeast);
+          block[7] = BOARD (inboard, isouth, jeast);
+          const char neighbor_count = block[0] + block[1] + block[2] + block[3] + block[4] + block[5] + block[6] + block[7];
+          
 
               // BOARD (inboard, inorth, jwest) + 
               // BOARD (inboard, inorth, j1) + 
