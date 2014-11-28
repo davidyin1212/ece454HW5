@@ -35,8 +35,6 @@ typedef struct args
 
 void *thread(void *args);
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-int L = 128;
-int W = 24;
 
 char* parellel_game_of_life (char* outboard, 
         char* inboard,
@@ -122,55 +120,82 @@ void *thread (void * args) {
   // printf("ncols: %d\n", ncols);
   // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
-  int i, j, i1, j1;
+  int i, j;
   int from = (slice*ncols)/4;
   int to = ((slice+1)*ncols)/4;
   char block[8];
-  for (i = 0; i < nrows; i+=L)
+  for (i = 0; i < nrows; i++)
   {
-    for (j = from; j < to; j+=W)
+    for (j = from; j < to; j++)
     {
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
-      for (i1 = i; i1 < MIN(nrows, i + L); i1++) {
-          // block[0] = BOARD(inboard, MOD (i1-1, nrows), MOD (j-1, ncols));
-          // block[1] = BOARD(inboard, i1, MOD (j-1, ncols));
-          // block[2] = BOARD(inboard, MOD (i1+1, nrows), MOD (j-1, ncols));
-          // block[3] = BOARD(inboard, MOD (i1-1, nrows), j);
-          // block[4] = BOARD(inboard, MOD (i1+1, nrows), j);
-        for (j1 = j; j1 < MIN(to, j + W); j1++) {
-          const int inorth = MOD (i1-1, nrows);
-          const int isouth = MOD (i1+1, nrows);
-          const int jwest = MOD (j1-1, ncols);
-          const int jeast = MOD (j1+1, ncols);
-          block[0] = block[3];
-          block[1] = BOARD(inboard, i1, j1);
-          block[2] = block[4];
-          block[3] = block[5];
-          block[4] = block[7];
+      const int inorth = MOD (i1-1, nrows);
+      const int isouth = MOD (i1+1, nrows);
+      const int jwest = MOD (j1-1, ncols);
+      const int jeast = MOD (j1+1, ncols);
+      // block[0] = block[3];
+      // block[1] = BOARD(inboard, i1, j1);
+      // block[2] = block[4];
+      // block[3] = block[5];
+      // block[4] = block[7];
 
-          block[5] = BOARD (inboard, inorth, jeast);
-          block[6] = BOARD (inboard, i1, jeast);
-          block[7] = BOARD (inboard, isouth, jeast);
-          const char neighbor_count = block[0] + block[1] + block[2] + block[3] + block[4] + block[5] + block[6] + block[7];
-          
+      // block[5] = BOARD (inboard, inorth, jeast);
+      // block[6] = BOARD (inboard, i1, jeast);
+      // block[7] = BOARD (inboard, isouth, jeast);
+      const char neighbor_count = //block[0] + block[1] + block[2] + block[3] + block[4] + block[5] + block[6] + block[7];
+          BOARD (inboard, inorth, jwest) + 
+          BOARD (inboard, inorth, j1) + 
+          BOARD (inboard, inorth, jeast) + 
+          BOARD (inboard, i1, jwest) +
+          BOARD (inboard, i1, jeast) + 
+          BOARD (inboard, isouth, jwest) +
+          BOARD (inboard, isouth, j1) + 
+          BOARD (inboard, isouth, jeast);
 
-              // BOARD (inboard, inorth, jwest) + 
-              // BOARD (inboard, inorth, j1) + 
-              // BOARD (inboard, inorth, jeast) + 
-              // BOARD (inboard, i1, jwest) +
-              // BOARD (inboard, i1, jeast) + 
-              // BOARD (inboard, isouth, jwest) +
-              // BOARD (inboard, isouth, j1) + 
-              // BOARD (inboard, isouth, jeast);
-
-          char state = BOARD (inboard, i1, j1);
-          char count = neighbor_count;
-          BOARD(outboard, i1, j1) = (! state && (count == (char) 3)) || (state && (count >= 2) && (count <= 3));
-        }
-      }
+      char state = BOARD (inboard, i1, j1);
+      char count = neighbor_count;
+      BOARD(outboard, i1, j1) = (! state && (count == (char) 3)) || (state && (count >= 2) && (count <= 3));
     }
   }
+
+  // int slice = ((Args *)args)->slice;
+  // // printf("slice: %d\n", slice);
+  // // printf("arg 1: %p\n", (char *) args[1]);
+  // char *outboard = ((Args *)args)->outboard;
+  // char *inboard = ((Args *)args)->inboard;
+  // const int nrows = ((Args *)args)->nrows; 
+  // const int ncols = ((Args *)args)->ncols;
+  // // printf("nrows: %d\n", nrows);
+  // // printf("ncols: %d\n", ncols);
+  // // printf("gens_max: %d\n", gens_max);
+  // const int LDA = nrows;
+  // int i, j;
+  // int from = (slice*ncols)/4;
+  // int to = ((slice+1)*ncols)/4;
+
+  // for (i = 0; i < nrows; i++)
+  // {
+  //   for (j = from; j < to; j++)
+  //   {
+  //     const int inorth = mod (i-1, nrows);
+  //     const int isouth = mod (i+1, nrows);
+  //     const int jwest = mod (j-1, ncols);
+  //     const int jeast = mod (j+1, ncols);
+
+  //     const char neighbor_count = 
+  //         BOARD (inboard, inorth, jwest) + 
+  //         BOARD (inboard, inorth, j) + 
+  //         BOARD (inboard, inorth, jeast) + 
+  //         BOARD (inboard, i, jwest) +
+  //         BOARD (inboard, i, jeast) + 
+  //         BOARD (inboard, isouth, jwest) +
+  //         BOARD (inboard, isouth, j) + 
+  //         BOARD (inboard, isouth, jeast);
+
+  //     BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+  //   }
+  // }
 }
 
 
