@@ -126,8 +126,8 @@ void *thread (void * args) {
 
   for (i = 0; i < nrows; i+=L)
   {
-    printf("L: %d\n", L);
-    printf("W: %d\n", W);
+    printf("i: %d\n", i);
+    printf("j: %d\n", j);
     for (j = from; j < to; j+=W)
     {
       for (i1 = i; i < MIN(nrows, i + L); i++) {
