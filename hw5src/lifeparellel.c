@@ -99,6 +99,9 @@ void *thread (void ** args) {
   const int nrows = *((int *)args[3]); 
   const int ncols = *((int *)args[4]);
   const int gens_max = *((int *)args[5]);
+  printf("nrows: %d\n", nrows);
+  printf("ncols: %d\n", ncols);
+  printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
   int curgen, i, j;
   int from = (slice*ncols)/4;
