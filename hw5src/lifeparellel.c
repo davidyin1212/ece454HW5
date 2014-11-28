@@ -21,6 +21,8 @@
 
 #define MIN(X,Y)  ((X) < (Y) ? (X) : (Y))
 
+#define MOD(x,m) ((x < 0) ? ((x % m) + m) : (x % m))
+
 typedef struct args
 {
   int slice;
@@ -132,10 +134,10 @@ void *thread (void * args) {
       // printf("j: %d\n", j);
       for (i1 = i; i1 < MIN(nrows, i + L); i1++) {
         for (j1 = j; j1 < MIN(to, j + W); j1++) {
-          const int inorth = mod (i1-1, nrows);
-          const int isouth = mod (i1+1, nrows);
-          const int jwest = mod (j1-1, ncols);
-          const int jeast = mod (j1+1, ncols);
+          const int inorth = MOD (i1-1, nrows);
+          const int isouth = MOD (i1+1, nrows);
+          const int jwest = MOD (j1-1, ncols);
+          const int jeast = MOD (j1+1, ncols);
 
           const char neighbor_count = 
               BOARD (inboard, inorth, jwest) + 
@@ -147,7 +149,9 @@ void *thread (void * args) {
               BOARD (inboard, isouth, j1) + 
               BOARD (inboard, isouth, jeast);
 
-          BOARD(outboard, i1, j1) = alivep (neighbor_count, BOARD (inboard, i1, j1));
+          char state = BOARD (inboard, i1, j1);
+          char count = neighbor_count;
+          BOARD(outboard, i1, j1) = (! state && (count == (char) 3)) || (state && (count >= 2) && (count <= 3));
         }
       }
     }
