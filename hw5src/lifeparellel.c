@@ -128,8 +128,8 @@ void *thread (void * args) {
   {
     for (j = from; j < to; j+=W)
     {
-      printf("i: %d\n", i);
-      printf("j: %d\n", j);
+      // printf("i: %d\n", i);
+      // printf("j: %d\n", j);
       for (i1 = i; i < MIN(nrows, i + L); i1++) {
         for (j1 = j; j < MIN(to, j + W); j1++) {
           const int inorth = mod (i1-1, nrows);
