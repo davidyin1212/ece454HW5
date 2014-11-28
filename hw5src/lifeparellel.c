@@ -44,7 +44,7 @@ char* parellel_game_of_life (char* outboard,
     for(i = 0; i < 4; i++) {
       pthread_join(thrd[i], NULL);
     }
-    SWAP_BOARDS( outboard, inboard );
+    // SWAP_BOARDS( outboard, inboard );
     // /* HINT: in the parallel decomposition, LDA may not be equal to
     //    nrows! */
     // const int LDA = nrows;
