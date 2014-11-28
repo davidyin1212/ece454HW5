@@ -130,10 +130,10 @@ void *thread (void * args) {
     {
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
-      const int inorth = MOD (i1-1, nrows);
-      const int isouth = MOD (i1+1, nrows);
-      const int jwest = MOD (j1-1, ncols);
-      const int jeast = MOD (j1+1, ncols);
+      const int inorth = MOD (i-1, nrows);
+      const int isouth = MOD (i+1, nrows);
+      const int jwest = MOD (j-1, ncols);
+      const int jeast = MOD (j+1, ncols);
       // block[0] = block[3];
       // block[1] = BOARD(inboard, i1, j1);
       // block[2] = block[4];
@@ -145,17 +145,17 @@ void *thread (void * args) {
       // block[7] = BOARD (inboard, isouth, jeast);
       const char neighbor_count = //block[0] + block[1] + block[2] + block[3] + block[4] + block[5] + block[6] + block[7];
           BOARD (inboard, inorth, jwest) + 
-          BOARD (inboard, inorth, j1) + 
+          BOARD (inboard, inorth, j) + 
           BOARD (inboard, inorth, jeast) + 
-          BOARD (inboard, i1, jwest) +
-          BOARD (inboard, i1, jeast) + 
+          BOARD (inboard, i, jwest) +
+          BOARD (inboard, i, jeast) + 
           BOARD (inboard, isouth, jwest) +
-          BOARD (inboard, isouth, j1) + 
+          BOARD (inboard, isouth, j) + 
           BOARD (inboard, isouth, jeast);
 
-      char state = BOARD (inboard, i1, j1);
+      char state = BOARD (inboard, i, j);
       char count = neighbor_count;
-      BOARD(outboard, i1, j1) = (! state && (count == (char) 3)) || (state && (count >= 2) && (count <= 3));
+      BOARD(outboard, i, j) = (! state && (count == (char) 3)) || (state && (count >= 2) && (count <= 3));
     }
   }
 
