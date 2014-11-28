@@ -31,6 +31,7 @@ sequential_game_of_life (char* outboard,
 {
     /* HINT: in the parallel decomposition, LDA may not be equal to
        nrows! */
+    printf("using sequential\n");
     const int LDA = nrows;
     int curgen, i, j, i1, j1;
 
