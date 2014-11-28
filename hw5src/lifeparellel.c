@@ -35,51 +35,50 @@ char* parellel_game_of_life (char* outboard,
 
     void *args [6] = {0, outboard, inboard, &nrows, &ncols, &gens_max};
 
-    for (i = 0; i < 4; i++) {
-      index[i] = i;
-      args[0] = (void*) &index[i];
-      pthread_create(&thrd[i], NULL, &thread, args);
+    /* HINT: in the parallel decomposition, LDA may not be equal to
+       nrows! */
+    const int LDA = nrows;
+    int curgen, i, j;
+
+    for (curgen = 0; curgen < gens_max; curgen++)
+    {
+        /* HINT: you'll be parallelizing these loop(s) by doing a
+           geometric decomposition of the output */
+      for (i = 0; i < 4; i++) {
+        index[i] = i;
+        args[0] = (void*) &index[i];
+        pthread_create(&thrd[i], NULL, &thread, args);
+      }
+
+      for(i = 0; i < 4; i++) {
+        pthread_join(thrd[i], NULL);
+      }
+        // for (i = 0; i < nrows; i++)
+        // {
+        //     for (j = 0; j < ncols; j++)
+        //     {
+        //         const int inorth = mod (i-1, nrows);
+        //         const int isouth = mod (i+1, nrows);
+        //         const int jwest = mod (j-1, ncols);
+        //         const int jeast = mod (j+1, ncols);
+
+        //         const char neighbor_count = 
+        //             BOARD (inboard, inorth, jwest) + 
+        //             BOARD (inboard, inorth, j) + 
+        //             BOARD (inboard, inorth, jeast) + 
+        //             BOARD (inboard, i, jwest) +
+        //             BOARD (inboard, i, jeast) + 
+        //             BOARD (inboard, isouth, jwest) +
+        //             BOARD (inboard, isouth, j) + 
+        //             BOARD (inboard, isouth, jeast);
+
+        //         BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+
+        //     }
+        // }
+        SWAP_BOARDS( outboard, inboard );
+
     }
-
-    for(i = 0; i < 4; i++) {
-      pthread_join(thrd[i], NULL);
-    }
-    // SWAP_BOARDS( outboard, inboard );
-    // /* HINT: in the parallel decomposition, LDA may not be equal to
-    //    nrows! */
-    // const int LDA = nrows;
-    // int curgen, i, j;
-
-    // for (curgen = 0; curgen < gens_max; curgen++)
-    // {
-    //     /* HINT: you'll be parallelizing these loop(s) by doing a
-    //        geometric decomposition of the output */
-    //     for (i = 0; i < nrows; i++)
-    //     {
-    //         for (j = 0; j < ncols; j++)
-    //         {
-    //             const int inorth = mod (i-1, nrows);
-    //             const int isouth = mod (i+1, nrows);
-    //             const int jwest = mod (j-1, ncols);
-    //             const int jeast = mod (j+1, ncols);
-
-    //             const char neighbor_count = 
-    //                 BOARD (inboard, inorth, jwest) + 
-    //                 BOARD (inboard, inorth, j) + 
-    //                 BOARD (inboard, inorth, jeast) + 
-    //                 BOARD (inboard, i, jwest) +
-    //                 BOARD (inboard, i, jeast) + 
-    //                 BOARD (inboard, isouth, jwest) +
-    //                 BOARD (inboard, isouth, j) + 
-    //                 BOARD (inboard, isouth, jeast);
-
-    //             BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
-
-    //         }
-    //     }
-    //     SWAP_BOARDS( outboard, inboard );
-
-    // }
 
     /* 
      * We return the output board, so that we know which one contains
@@ -107,37 +106,28 @@ void *thread (void ** args) {
   int from = (slice*ncols)/4;
   int to = ((slice+1)*ncols)/4;
 
-  for (curgen = 0; curgen < gens_max; curgen++)
+  for (i = 0; i < nrows; i++)
   {
-      /* HINT: you'll be parallelizing these loop(s) by doing a
-         geometric decomposition of the output */
-    // pthread_mutex_lock(&mutex1);
-      for (i = 0; i < nrows; i++)
-      {
-          for (j = from; j < to; j++)
-          {
-              const int inorth = mod (i-1, nrows);
-              const int isouth = mod (i+1, nrows);
-              const int jwest = mod (j-1, ncols);
-              const int jeast = mod (j+1, ncols);
+    for (j = from; j < to; j++)
+    {
+      const int inorth = mod (i-1, nrows);
+      const int isouth = mod (i+1, nrows);
+      const int jwest = mod (j-1, ncols);
+      const int jeast = mod (j+1, ncols);
 
-              const char neighbor_count = 
-                  BOARD (inboard, inorth, jwest) + 
-                  BOARD (inboard, inorth, j) + 
-                  BOARD (inboard, inorth, jeast) + 
-                  BOARD (inboard, i, jwest) +
-                  BOARD (inboard, i, jeast) + 
-                  BOARD (inboard, isouth, jwest) +
-                  BOARD (inboard, isouth, j) + 
-                  BOARD (inboard, isouth, jeast);
+      const char neighbor_count = 
+          BOARD (inboard, inorth, jwest) + 
+          BOARD (inboard, inorth, j) + 
+          BOARD (inboard, inorth, jeast) + 
+          BOARD (inboard, i, jwest) +
+          BOARD (inboard, i, jeast) + 
+          BOARD (inboard, isouth, jwest) +
+          BOARD (inboard, isouth, j) + 
+          BOARD (inboard, isouth, jeast);
 
-              BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
-
-          }
-      }
-      SWAP_BOARDS( outboard, inboard );
-      // pthread_mutex_unlock(&mutex1);
-  }  
+      BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
+    }
+  }
 }
 
 
