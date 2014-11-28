@@ -91,16 +91,16 @@ char* parellel_game_of_life (char* outboard,
 
 void *thread (void ** args) {
   int slice = *((int *)args[0]);
-  printf("slice: %d\n", slice);
-  printf("arg 1: %p\n", (char *) args[1]);
+  // printf("slice: %d\n", slice);
+  // printf("arg 1: %p\n", (char *) args[1]);
   char *outboard = (char *) args[1];
   char *inboard = (char *) args[2];
   const int nrows = *((int *)args[3]); 
   const int ncols = *((int *)args[4]);
   const int gens_max = *((int *)args[5]);
-  printf("nrows: %d\n", nrows);
-  printf("ncols: %d\n", ncols);
-  printf("gens_max: %d\n", gens_max);
+  // printf("nrows: %d\n", nrows);
+  // printf("ncols: %d\n", ncols);
+  // printf("gens_max: %d\n", gens_max);
   const int LDA = nrows;
   int curgen, i, j;
   int from = (slice*ncols)/4;
