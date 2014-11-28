@@ -108,7 +108,7 @@ void *thread (void ** args) {
   {
       /* HINT: you'll be parallelizing these loop(s) by doing a
          geometric decomposition of the output */
-    pthread_mutex_lock(&mutex1);
+    // pthread_mutex_lock(&mutex1);
       for (i = 0; i < nrows; i++)
       {
           for (j = from; j < to; j++)
@@ -133,7 +133,7 @@ void *thread (void ** args) {
           }
       }
       SWAP_BOARDS( outboard, inboard );
-      pthread_mutex_unlock(&mutex1);
+      // pthread_mutex_unlock(&mutex1);
   }  
 }
 
