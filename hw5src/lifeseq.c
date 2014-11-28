@@ -20,7 +20,8 @@
 
 #define BOARD( __board, __i, __j )  (__board[(__i) + LDA*(__j)])
 
-
+int L = 128;
+int W = 8;
     char*
 sequential_game_of_life (char* outboard, 
         char* inboard,
