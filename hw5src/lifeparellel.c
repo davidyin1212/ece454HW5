@@ -126,12 +126,12 @@ void *thread (void * args) {
 
   for (i = 0; i < nrows; i+=L)
   {
-    printf("i: %d\n", i);
-    printf("j: %d\n", j);
     for (j = from; j < to; j+=W)
     {
       for (i1 = i; i < MIN(nrows, i + L); i++) {
         for (j1 = j; j < MIN(to, j + W); j++) {
+          printf("i: %d\n", i);
+          printf("j: %d\n", j);
           const int inorth = mod (i1-1, nrows);
           const int isouth = mod (i1+1, nrows);
           const int jwest = mod (j1-1, ncols);
