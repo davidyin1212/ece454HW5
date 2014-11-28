@@ -55,6 +55,7 @@ char* parellel_game_of_life (char* outboard,
         /* HINT: you'll be parallelizing these loop(s) by doing a
            geometric decomposition of the output */
       for (i = 0; i < 4; i++) {
+        args[i] = malloc (sizeof(int) * 4 + sizeof(char *) * 2);
         args[i]->slice = i;
         args[i]->outboard = outboard;
         args[i]->inboard = inboard;
