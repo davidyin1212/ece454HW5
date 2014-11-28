@@ -133,9 +133,9 @@ void *thread (void * args) {
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
       for (i1 = i; i1 < MIN(nrows, i + L); i1++) {
-          block[0] = BOARD(inboard, MOD (i1-1, nrows), MOD (j1-1, ncols));
-          block[1] = BOARD(inboard, i1, MOD (j1-1, ncols));
-          block[2] = BOARD(inboard, MOD (i1+1, nrows), MOD (j1-1, ncols));
+          block[0] = BOARD(inboard, MOD (i1-1, nrows), MOD (j-1, ncols));
+          block[1] = BOARD(inboard, i1, MOD (j-1, ncols));
+          block[2] = BOARD(inboard, MOD (i1+1, nrows), MOD (j-1, ncols));
           block[3] = BOARD(inboard, MOD (i1-1, nrows), j);
           block[4] = BOARD(inboard, MOD (i1+1, nrows), j);
         for (j1 = j; j1 < MIN(to, j + W); j1++) {
