@@ -140,7 +140,7 @@ void *thread (void * args) {
     {
       const int jwest = (j == 0) ? (ncols-1) : (j-1);
       const int jeast = (j == ncols-1) ? (0) : (j+1);
-      // printf("i: %d\n", i);
+      printf("prevpair: %d, curpair: %d, prevnode: %d\n", prevpair, curpair, prevnode);
       // printf("j: %d\n", j);
       int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast];
       int nextnode = inboard[start_of_i + jeast];
