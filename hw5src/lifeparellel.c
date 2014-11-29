@@ -168,7 +168,7 @@ void *thread (void * args) {
       outboard[start_of_i + j * nrows] = (!inboard[start_of_i + j * nrows] && (count == 3)) || (inboard[start_of_i + j * nrows] && (count >= 2) && (count <= 3));
       prevpair = curpair;
       curpair = nextpair;
-      prevnode = nextnode;
+      prevnode = inboard[start_of_i + j * nrows] - '0';
     }
   }
 }
