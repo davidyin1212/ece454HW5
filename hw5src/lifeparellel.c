@@ -136,8 +136,6 @@ void *thread (void * args) {
     int prevnode = inboard[start_of_i + (ncols-1)*nrows] - '0';
     int curpair = inboard[start_of_inorth] + inboard[start_of_isouth] - '0';
 
-    printf("prevpair: %d, prevnode: %d, curpair: %d \n", prevpair, prevnode, curpair);
-
     for (j = 0; j < ncols; j++)
     {
       const int jwest = (j == 0) ? (ncols-1) : (j-1);
@@ -168,6 +166,9 @@ void *thread (void * args) {
       // char state = BOARD (inboard, i, j);
       char count = neighbor_count;
       outboard[start_of_i + j * nrows] = (!inboard[start_of_i + j * nrows] && (count == 3)) || (inboard[start_of_i + j * nrows] && (count >= 2) && (count <= 3));
+      prevpair = curpair;
+      curpair = nextpair;
+      prevnode = nextnode
     }
   }
 }
