@@ -140,7 +140,7 @@ void *thread (void * args) {
     {
       const int jwest = (j == 0) ? (ncols-1) : (j-1);
       const int jeast = (j == ncols-1) ? (0) : (j+1);
-      printf("prevpair: %d, curpair: %d, prevnode: %d\n", prevpair, curpair, prevnode);
+      // printf("prevpair: %d, curpair: %d, prevnode: %d\n", prevpair, curpair, prevnode);
       // printf("j: %d\n", j);
       int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast];
       int nextnode = inboard[start_of_i + jeast];
@@ -149,7 +149,7 @@ void *thread (void * args) {
       outboard[start_of_i + j] = (!inboard[start_of_i + j] && (count == 3)) || (inboard[start_of_i + j] && (count >= 2) && (count <= 3));
       prevpair = curpair;
       curpair = nextpair;
-      prevnode = nextnode;
+      prevnode = inboard[start_of_i + j];
     }
   }
   pthread_exit(NULL);
