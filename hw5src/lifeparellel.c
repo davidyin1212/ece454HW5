@@ -128,12 +128,12 @@ void *thread (void * args) {
   {
     const int inorth = (i == 0) ? (nrows-1) : (i-1);
     const int isouth = (i == nrows-1) ? (0) : (i+1);
-    const int start_of_inorth = inorth;
-    const int start_of_isouth = isouth;
-    const int start_of_i = i;
+    const int start_of_inorth = inorth * ncols;
+    const int start_of_isouth = isouth * ncols;
+    const int start_of_i = i * ncols;
 
-    int prevpair = inboard[start_of_inorth + (ncols-1)*nrows] + inboard[start_of_isouth + (ncols-1)*nrows] - '0';
-    int prevnode = inboard[start_of_i + (ncols-1)*nrows] - '0';
+    int prevpair = inboard[start_of_inorth + (ncols-1)] + inboard[start_of_isouth + (ncols-1)] - '0';
+    int prevnode = inboard[start_of_i + (ncols-1)] - '0';
     int curpair = inboard[start_of_inorth] + inboard[start_of_isouth] - '0';
 
     for (j = 0; j < ncols; j++)
@@ -142,35 +142,17 @@ void *thread (void * args) {
       const int jeast = (j == ncols-1) ? (0) : (j+1);
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
-      // block[0] = block[3];
-      // block[1] = BOARD(inboard, i1, j1);
-      // block[2] = block[4];
-      // block[3] = block[5];
-      // block[4] = block[7];
-
-      // block[5] = BOARD (inboard, inorth, jeast);
-      // block[6] = BOARD (inboard, i1, jeast);
-      // block[7] = BOARD (inboard, isouth, jeast);
-      int nextpair = inboard[start_of_inorth + jeast * nrows] + inboard[start_of_isouth + jeast * nrows] - '0';
-      int nextnode = inboard[start_of_i + jeast * nrows] - '0';
+      int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast] - '0';
+      int nextnode = inboard[start_of_i + jeast] - '0';
       int neighbor_count = prevpair + prevnode + curpair + nextpair + nextnode; 
-          // BOARD (inboard, inorth, jwest) + 
-          // BOARD (inboard, inorth, j) + 
-          // BOARD (inboard, inorth, jeast) + 
-          // BOARD (inboard, i, jwest) +
-          // BOARD (inboard, i, jeast) + 
-          // BOARD (inboard, isouth, jwest) +
-          // BOARD (inboard, isouth, j) + 
-          // BOARD (inboard, isouth, jeast);
-
-      // char state = BOARD (inboard, i, j);
       char count = neighbor_count;
-      outboard[start_of_i + j * nrows] = (!inboard[start_of_i + j * nrows] && (count == 3)) || (inboard[start_of_i + j * nrows] && (count >= 2) && (count <= 3));
+      outboard[start_of_i + j] = (!inboard[start_of_i + j] && (count == 3)) || (inboard[start_of_i + j] && (count >= 2) && (count <= 3));
       prevpair = curpair;
       curpair = nextpair;
-      prevnode = inboard[start_of_i + j * nrows] - '0';
+      prevnode = nextnode;
     }
   }
+  pthread_exit(NULL);
 }
 
 
