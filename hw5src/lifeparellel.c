@@ -132,6 +132,8 @@ void *thread (void * args) {
     const int start_of_isouth = isouth;
     const int start_of_i = i;
 
+    printf("start_of_inorth: %d, start_of_isouth: %d, start_of_i: %d \n", start_of_inorth, start_of_isouth, start_of_i);
+
     int prevpair = inboard[start_of_inorth + (ncols-1)*nrows] + inboard[start_of_isouth + (ncols-1)*nrows] - '0';
     int prevnode = inboard[start_of_i + (ncols-1)*nrows] - '0';
     int curpair = inboard[start_of_inorth] + inboard[start_of_isouth] - '0';
