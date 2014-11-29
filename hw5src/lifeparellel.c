@@ -132,9 +132,9 @@ void *thread (void * args) {
     const int start_of_isouth = isouth * ncols;
     const int start_of_i = i * ncols;
 
-    int prevpair = inboard[start_of_inorth + (ncols-1)] + inboard[start_of_isouth + (ncols-1)] - '0';
-    int prevnode = inboard[start_of_i + (ncols-1)] - '0';
-    int curpair = inboard[start_of_inorth] + inboard[start_of_isouth] - '0';
+    int prevpair = inboard[start_of_inorth + (ncols-1)] + inboard[start_of_isouth + (ncols-1)];
+    int prevnode = inboard[start_of_i + (ncols-1)];
+    int curpair = inboard[start_of_inorth] + inboard[start_of_isouth];
 
     for (j = 0; j < ncols; j++)
     {
@@ -142,8 +142,8 @@ void *thread (void * args) {
       const int jeast = (j == ncols-1) ? (0) : (j+1);
       // printf("i: %d\n", i);
       // printf("j: %d\n", j);
-      int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast] - '0';
-      int nextnode = inboard[start_of_i + jeast] - '0';
+      int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast];
+      int nextnode = inboard[start_of_i + jeast];
       int neighbor_count = prevpair + prevnode + curpair + nextpair + nextnode; 
       char count = neighbor_count;
       outboard[start_of_i + j] = (!inboard[start_of_i + j] && (count == 3)) || (inboard[start_of_i + j] && (count >= 2) && (count <= 3));
