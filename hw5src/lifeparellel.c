@@ -1,7 +1,10 @@
 /*****************************************************************************
- * life.c
- * The original sequential implementation resides here.
- * Do not modify this file, but you are encouraged to borrow from it
+ * lifeparellel.c
+ * What we do here is first we parallelize by spliting on nrows by 4 threads we
+ * then do some dp because we know that in each iteration atleast 5 of the previous
+ * values are used again from the previous iteration so we store them as local
+ * variables so that we don't have to read them again.
+ * We then use function inline to increase the further
  ****************************************************************************/
 #include "life.h"
 #include "util.h"
@@ -23,6 +26,7 @@
 
 #define MOD(x,m) ((x < 0) ? ((x % m) + m) : (x % m))
 
+//list of arguments that will be pased into the thread this is sotred as a struct to make it easier to pass in
 typedef struct args
 {
   int slice;
@@ -36,6 +40,8 @@ typedef struct args
 void *thread(void *args);
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
+//We create a 4 new threads that does the geometric decompesition of nrows so it runs what the seq code use to
+//but on a quater of the rows we then join it back and do the swap
 char* parellel_game_of_life (char* outboard, 
         char* inboard,
         const int nrows,
@@ -48,16 +54,11 @@ char* parellel_game_of_life (char* outboard,
     // int i;
 
     Args *args [4];
-
-    /* HINT: in the parallel decomposition, LDA may not be equal to
-       nrows! */
-    const int LDA = nrows;
     int curgen, i, j;
 
     for (curgen = 0; curgen < gens_max; curgen++)
     {
-        /* HINT: you'll be parallelizing these loop(s) by doing a
-           geometric decomposition of the output */
+
       for (i = 0; i < 4; i++) {
         args[i] = malloc (sizeof(int) * 4 + sizeof(char *) * 2);
         args[i]->slice = i;
@@ -72,29 +73,6 @@ char* parellel_game_of_life (char* outboard,
       for(i = 0; i < 4; i++) {
         pthread_join(thrd[i], NULL);
       }
-      // for (i = 0; i < nrows; i++)
-      // {
-      //     for (j = 0; j < ncols; j++)
-      //     {
-      //         const int inorth = mod (i-1, nrows);
-      //         const int isouth = mod (i+1, nrows);
-      //         const int jwest = mod (j-1, ncols);
-      //         const int jeast = mod (j+1, ncols);
-
-      //         const char neighbor_count = 
-      //             BOARD (inboard, inorth, jwest) + 
-      //             BOARD (inboard, inorth, j) + 
-      //             BOARD (inboard, inorth, jeast) + 
-      //             BOARD (inboard, i, jwest) +
-      //             BOARD (inboard, i, jeast) + 
-      //             BOARD (inboard, isouth, jwest) +
-      //             BOARD (inboard, isouth, j) + 
-      //             BOARD (inboard, isouth, jeast);
-
-      //         BOARD(outboard, i, j) = alivep (neighbor_count, BOARD (inboard, i, j));
-
-      //     }
-      // }
       SWAP_BOARDS( outboard, inboard );
 
     }
@@ -108,45 +86,46 @@ char* parellel_game_of_life (char* outboard,
     return inboard;
 }
 
+//Take in the arguments form the args struct then splits on the nrows into 4 threads
 void *thread (void * args) {
   int slice = ((Args *)args)->slice;
-  // printf("slice: %d\n", slice);
-  // printf("arg 1: %p\n", (char *) args[1]);
   char *outboard = ((Args *)args)->outboard;
   char *inboard = ((Args *)args)->inboard;
   const int nrows = ((Args *)args)->nrows; 
   const int ncols = ((Args *)args)->ncols;
-  // printf("nrows: %d\n", nrows);
-  // printf("ncols: %d\n", ncols);
-  // printf("gens_max: %d\n", gens_max);
-  const int LDA = nrows;
   int i, j;
   int from = (slice*nrows)/4;
   int to = ((slice+1)*nrows)/4;
   char block[8];
   for (i = from; i < to; i++)
   {
+    //stores the values at the begining of i so it could be a wrap around value or the first value in the grid
+    //stores also the value above and below the current position
     const int inorth = (i == 0) ? (nrows-1) : (i-1);
     const int isouth = (i == nrows-1) ? (0) : (i+1);
     const int start_of_inorth = inorth * ncols;
     const int start_of_isouth = isouth * ncols;
     const int start_of_i = i * ncols;
 
+    //stores the previous value that are above and below the previous iteration
     int prevpair = inboard[start_of_inorth + (ncols-1)] + inboard[start_of_isouth + (ncols-1)];
+    //stores the node that you were previously at
     int prevnode = inboard[start_of_i + (ncols-1)];
+    //stores the current values that are above below the current node
     int curpair = inboard[start_of_inorth] + inboard[start_of_isouth];
 
     for (j = 0; j < ncols; j++)
     {
+      //calculates teh rest of the pairs which are the ones infront of the current as well as the next node in the order of j
       const int jwest = (j == 0) ? (ncols-1) : (j-1);
       const int jeast = (j == ncols-1) ? (0) : (j+1);
-      // printf("prevpair: %d, curpair: %d, prevnode: %d\n", prevpair, curpair, prevnode);
-      // printf("j: %d\n", j);
       int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast];
       int nextnode = inboard[start_of_i + jeast];
+      //sums them all the get the neighbor count
       int neighbor_count = prevpair + prevnode + curpair + nextpair + nextnode; 
       char count = neighbor_count;
       outboard[start_of_i + j] = (!inboard[start_of_i + j] && (count == 3)) || (inboard[start_of_i + j] && (count >= 2) && (count <= 3));
+      //updates the values so that the values are correct for the next iteration
       prevpair = curpair;
       curpair = nextpair;
       prevnode = inboard[start_of_i + j];
