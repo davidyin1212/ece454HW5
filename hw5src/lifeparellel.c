@@ -6,6 +6,7 @@
  * variables so that we don't have to read them again.
  * We then use function inline to increase the further
  ****************************************************************************/
+#include <stdlib.h>
 #include "life.h"
 #include "util.h"
 #include "pthread.h"
@@ -50,11 +51,9 @@ char* parellel_game_of_life (char* outboard,
 {
 
     pthread_t thrd[4];
-    int index[4];
-    // int i;
 
     Args *args [4];
-    int curgen, i, j;
+    int curgen, i;
 
     for (curgen = 0; curgen < gens_max; curgen++)
     {
@@ -96,7 +95,6 @@ void *thread (void * args) {
   int i, j;
   int from = (slice*nrows)/4;
   int to = ((slice+1)*nrows)/4;
-  char block[8];
   for (i = from; i < to; i++)
   {
     //stores the values at the begining of i so it could be a wrap around value or the first value in the grid
@@ -117,7 +115,6 @@ void *thread (void * args) {
     for (j = 0; j < ncols; j++)
     {
       //calculates teh rest of the pairs which are the ones infront of the current as well as the next node in the order of j
-      const int jwest = (j == 0) ? (ncols-1) : (j-1);
       const int jeast = (j == ncols-1) ? (0) : (j+1);
       int nextpair = inboard[start_of_inorth + jeast] + inboard[start_of_isouth + jeast];
       int nextnode = inboard[start_of_i + jeast];
